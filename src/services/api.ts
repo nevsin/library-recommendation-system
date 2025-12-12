@@ -1,5 +1,4 @@
 import { Book, ReadingList, Review, Recommendation } from '@/types';
-import { mockBooks, mockReadingLists } from './mockData';
 
 /**
  * ============================================================================
@@ -41,7 +40,10 @@ import { mockBooks, mockReadingLists } from './mockData';
  */
 
 // TODO: Uncomment this after deploying API Gateway (Week 2, Day 4)
-// const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ||
+  "https://lq8xh514vg.execute-api.us-east-1.amazonaws.com/dev";
+
 
 /**
  * TODO: Implement this function in Week 3, Day 4
@@ -89,17 +91,17 @@ import { mockBooks, mockReadingLists } from './mockData';
  * Expected response: Array of Book objects from DynamoDB
  */
 export async function getBooks(): Promise<Book[]> {
-  // TODO: Remove this mock implementation after deploying Lambda
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(mockBooks), 500);
-  });
+  const response = await fetch(`${API_BASE_URL}/books`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch books');
+  }
+  return response.json();
 }
 
 /**
  * Get a single book by ID
  *
  * TODO: Replace with real API call in Week 2, Day 3-4
- *
  * Implementation steps:
  * 1. Deploy Lambda function: library-get-book (see IMPLEMENTATION_GUIDE.md)
  * 2. Create API Gateway endpoint: GET /books/{id}
@@ -113,14 +115,21 @@ export async function getBooks(): Promise<Book[]> {
  * Expected response: Single Book object or null if not found
  */
 export async function getBook(id: string): Promise<Book | null> {
-  // TODO: Remove this mock implementation after deploying Lambda
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const book = mockBooks.find((b) => b.id === id);
-      resolve(book || null);
-    }, 300);
-  });
+  const response = await fetch(`${API_BASE_URL}/books/${id}`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch book");
+  }
+
+  const data = await response.json();
+
+  if (Array.isArray(data)) {
+    return data.find((b) => String(b.id) === String(id)) ?? null;
+  }
+
+  return data;
 }
+
 
 /**
  * Create a new book (admin only)

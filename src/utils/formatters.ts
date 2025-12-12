@@ -21,9 +21,13 @@ export function formatDate(isoString: string): string {
  * @param rating - Numeric rating value
  * @returns Formatted rating string (e.g., "4.5")
  */
-export function formatRating(rating: number): string {
+export function formatRating(rating?: number | null): string {
+  if (rating === undefined || rating === null || Number.isNaN(rating)) {
+    return '-';
+  }
   return rating.toFixed(1);
 }
+
 
 /**
  * Truncates text to a specified length and adds ellipsis
