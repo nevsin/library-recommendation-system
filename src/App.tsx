@@ -10,12 +10,10 @@ import { Recommendations } from './pages/Recommendations';
 import { ReadingLists } from './pages/ReadingLists';
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
+import { Verify } from './pages/Verify';
 import { Admin } from './pages/Admin';
 import { NotFound } from './pages/NotFound';
 
-/**
- * Main App component with routing and layout
- */
 function App() {
   return (
     <BrowserRouter>
@@ -28,6 +26,11 @@ function App() {
               <Route path="/books" element={<Books />} />
               <Route path="/books/:id" element={<BookDetail />} />
               <Route path="/recommendations" element={<Recommendations />} />
+
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/verify" element={<Verify />} />
+
               <Route
                 path="/reading-lists"
                 element={
@@ -36,8 +39,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
+
               <Route
                 path="/admin"
                 element={
@@ -46,6 +48,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>

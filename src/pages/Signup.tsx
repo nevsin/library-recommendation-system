@@ -6,12 +6,10 @@ import { useAuth } from '@/hooks/useAuth';
 import { validateEmail, validatePassword, validateRequired } from '@/utils/validation';
 import { handleApiError } from '@/utils/errorHandling';
 
-/**
- * Signup page component
- */
 export function Signup() {
   const navigate = useNavigate();
   const { signup } = useAuth();
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -27,26 +25,17 @@ export function Signup() {
   const validate = (): boolean => {
     const newErrors: typeof errors = {};
 
-    if (!validateRequired(name)) {
-      newErrors.name = 'Name is required';
+    if (!validateRequired(name)) newErrors.name = 'Name is required';
+
+    if (!validateRequired(email)) newErrors.email = 'Email is required';
+    else if (!validateEmail(email)) newErrors.email = 'Invalid email format';
+
+    if (!validateRequired(password)) newErrors.password = 'Password is required';
+    else if (!validatePassword(password)) {
+      newErrors.password = 'Password must be at least 8 characters with uppercase, lowercase, and number';
     }
 
-    if (!validateRequired(email)) {
-      newErrors.email = 'Email is required';
-    } else if (!validateEmail(email)) {
-      newErrors.email = 'Invalid email format';
-    }
-
-    if (!validateRequired(password)) {
-      newErrors.password = 'Password is required';
-    } else if (!validatePassword(password)) {
-      newErrors.password =
-        'Password must be at least 8 characters with uppercase, lowercase, and number';
-    }
-
-    if (password !== confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
+    if (password !== confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -54,15 +43,14 @@ export function Signup() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!validate()) {
-      return;
-    }
+    if (!validate()) return;
 
     setIsLoading(true);
     try {
       await signup(email, password, name);
-      navigate('/');
+
+      // ✅ signup sonrası ana sayfaya değil verify sayfasına git
+      navigate(`/verify?email=${encodeURIComponent(email)}`);
     } catch (error) {
       handleApiError(error);
     } finally {
@@ -76,12 +64,7 @@ export function Signup() {
         <div className="text-center mb-8">
           <div className="inline-block mb-4">
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-violet-500/30 mx-auto">
-              <svg
-                className="w-8 h-8 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -152,23 +135,14 @@ export function Signup() {
                     Terms of Service
                   </Link>{' '}
                   and{' '}
-                  <Link
-                    to="/privacy"
-                    className="text-violet-600 hover:text-violet-700 font-semibold"
-                  >
+                  <Link to="/privacy" className="text-violet-600 hover:text-violet-700 font-semibold">
                     Privacy Policy
                   </Link>
                 </span>
               </label>
             </div>
 
-            <Button
-              type="submit"
-              variant="primary"
-              size="lg"
-              className="w-full"
-              disabled={isLoading}
-            >
+            <Button type="submit" variant="primary" size="lg" className="w-full" disabled={isLoading}>
               {isLoading ? 'Creating account...' : 'Sign Up'}
             </Button>
           </form>
