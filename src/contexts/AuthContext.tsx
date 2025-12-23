@@ -24,7 +24,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // 🔑 JWT'den role çıkarma
+  // JWT'den role çıkarma
   const getRoleFromSession = async (): Promise<'admin' | 'user'> => {
     const session = await fetchAuthSession();
     const groups = session.tokens?.idToken?.payload[
@@ -34,7 +34,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return groups?.includes('admin') ? 'admin' : 'user';
   };
 
-  // 🔁 Sayfa yenilenince auth kontrolü
+  //  Sayfa yenilenince auth kontrolü
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -58,7 +58,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     checkAuth();
   }, []);
 
-  // 🔐 Login
+  // Login
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
@@ -79,14 +79,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // 🚪 Logout
+  //  Logout
   const logout = async () => {
     await signOut();
     setUser(null);
   };
 
-  // 📝 Signup (role burada atanmaz)
+  //  Signup (Cognito REQUIRED 
   const signup = async (email: string, password: string, name: string) => {
+    const nameParts = name.trim().split(' ');
+    const givenName = nameParts[0];
+    const familyName =
+      nameParts.length > 1 ? nameParts.slice(1).join(' ') : givenName;
+
     await signUp({
       username: email,
       password,
@@ -94,6 +99,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         userAttributes: {
           email,
           name,
+          given_name: givenName,
+          family_name: familyName,
         },
       },
     });
