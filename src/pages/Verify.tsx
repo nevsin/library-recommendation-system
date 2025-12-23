@@ -7,9 +7,21 @@ import { Button } from "@/components/common/Button";
 export function Verify() {
   const [params] = useSearchParams();
   const email = params.get("email") || "";
+
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  // Guard: prevent access without email parameter
+  if (!email) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p style={{ color: "red", fontWeight: 500 }}>
+          Invalid or missing verification link
+        </p>
+      </div>
+    );
+  }
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +34,7 @@ export function Verify() {
       navigate("/login");
     } catch (err) {
       console.error("Verification error:", err);
-      alert("Verification failed");
+      alert("Verification failed. Please check the code and try again.");
     } finally {
       setLoading(false);
     }

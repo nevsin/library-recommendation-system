@@ -1,14 +1,21 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Navigation } from './Navigation';
+import { useAuth } from '@/hooks/useAuth';
 
 /**
  * Modern Header component with glass morphism effect
- *
- * Displays logo, navigation links, and user profile dropdown
+ * Auth-aware (Login / User dropdown)
  */
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const { user, logout, isLoading } = useAuth();
+
+  // sadece isim göster (admin prefix vs yok)
+  const displayName =
+    user?.name?.replace(/^admin\s*/i, '') ||
+    user?.email?.split('@')[0];
 
   return (
     <header className="glass-effect sticky top-0 z-50 border-b border-white/20 shadow-lg">
@@ -41,21 +48,71 @@ export function Header() {
             <Navigation />
           </div>
 
-          {/* User Actions */}
-          <div className="hidden md:flex items-center space-x-3">
-            <Link
-              to="/login"
-              className="text-slate-700 hover:text-violet-600 transition-colors font-semibold px-4 py-2 rounded-lg hover:bg-violet-50"
-            >
-              Login
-            </Link>
-            <Link
-              to="/signup"
-              className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white px-6 py-2.5 rounded-xl hover:from-violet-700 hover:to-indigo-700 transition-all shadow-lg shadow-violet-500/30 hover:shadow-xl hover:shadow-violet-500/40 font-semibold transform hover:-translate-y-0.5"
-            >
-              Sign Up
-            </Link>
-          </div>
+          {/* USER AREA (DESKTOP) */}
+          {!isLoading && (
+            <div className="hidden md:flex items-center space-x-3 relative">
+              {user ? (
+                <>
+                  <button
+                    onClick={() => setIsUserMenuOpen((p) => !p)}
+                    className="flex items-center gap-2 bg-gradient-to-r from-violet-600 to-indigo-600 text-white px-4 py-2 rounded-xl font-semibold shadow-lg hover:from-violet-700 hover:to-indigo-700 transition"
+                  >
+                    {displayName}
+                    <svg
+                      className={`w-4 h-4 transition-transform ${
+                        isUserMenuOpen ? 'rotate-180' : ''
+                      }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+
+                  {isUserMenuOpen && (
+                    <div className="absolute right-0 top-12 w-56 bg-white rounded-xl shadow-xl border z-50">
+                      <div className="px-4 py-3 border-b">
+                        <p className="text-sm font-semibold text-slate-800">
+                          {displayName}
+                        </p>
+                        <p className="text-xs text-slate-500">
+                          {user.email}
+                        </p>
+                      </div>
+
+                      <button
+                        onClick={logout}
+                        className="w-full text-left px-4 py-3 text-sm font-semibold text-red-600 hover:bg-red-50 rounded-b-xl"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="text-slate-700 hover:text-violet-600 transition-colors font-semibold px-4 py-2 rounded-lg hover:bg-violet-50"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/signup"
+                    className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white px-6 py-2.5 rounded-xl hover:from-violet-700 hover:to-indigo-700 transition-all shadow-lg shadow-violet-500/30 font-semibold"
+                  >
+                    Sign Up
+                  </Link>
+                </>
+              )}
+            </div>
+          )}
 
           {/* Mobile Menu Button */}
           <button
@@ -64,19 +121,9 @@ export function Header() {
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {isMobileMenuOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               )}
             </svg>
           </button>
@@ -86,20 +133,37 @@ export function Header() {
         {isMobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-white/20 animate-slide-in">
             <Navigation mobile />
-            <div className="mt-4 space-y-2">
-              <Link
-                to="/login"
-                className="block text-slate-700 hover:text-violet-600 transition-colors py-2 px-4 rounded-lg hover:bg-violet-50 font-semibold"
-              >
-                Login
-              </Link>
-              <Link
-                to="/signup"
-                className="block bg-gradient-to-r from-violet-600 to-indigo-600 text-white px-4 py-2.5 rounded-xl hover:from-violet-700 hover:to-indigo-700 transition-all text-center font-semibold shadow-lg shadow-violet-500/30"
-              >
-                Sign Up
-              </Link>
-            </div>
+
+            {!isLoading && (
+              <div className="mt-4 space-y-2">
+                {user ? (
+                  <>
+                    <div className="px-4 py-2">
+                      <p className="font-semibold">{displayName}</p>
+                      <p className="text-xs text-slate-500">{user.email}</p>
+                    </div>
+                    <button
+                      onClick={logout}
+                      className="block w-full text-left text-red-600 font-semibold px-4 py-2 hover:bg-red-50 rounded-lg"
+                    >
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/login" className="block px-4 py-2 font-semibold hover:bg-violet-50 rounded-lg">
+                      Login
+                    </Link>
+                    <Link
+                      to="/signup"
+                      className="block bg-gradient-to-r from-violet-600 to-indigo-600 text-white px-4 py-2.5 rounded-xl text-center font-semibold"
+                    >
+                      Sign Up
+                    </Link>
+                  </>
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>
