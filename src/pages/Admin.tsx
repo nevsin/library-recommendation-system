@@ -6,7 +6,7 @@ import { Book } from '@/types';
  * Admin Dashboard Page
  *
  * - Accessible only by admin users
- * - Create Book functionality (Week 3 ready, Week 4 API-ready)
+ * - Create Book functionality
  */
 export function Admin() {
   const [title, setTitle] = useState('');
@@ -28,7 +28,8 @@ export function Admin() {
 
     setLoading(true);
     try {
-      const newBook: Omit<Book, 'id'> = {
+      // Sadece gerekli alanları göndermek için Partial kullandık
+      const newBook: Partial<Omit<Book, 'id'>> = {
         title,
         author,
         description,

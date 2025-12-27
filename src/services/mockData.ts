@@ -4,67 +4,10 @@ import { Book, User, ReadingList } from '@/types';
  * ============================================================================
  * MOCK DATA FOR DEVELOPMENT
  * ============================================================================
- *
- * ⚠️ IMPORTANT FOR AI ASSISTANTS AND DEVELOPERS:
- * This file contains ALL mock data used in the application during development.
- * When implementing the AWS backend, you should:
- *
- * 1. REMOVE all mock data from this file
- * 2. UPDATE src/services/api.ts to call real AWS Lambda functions
- * 3. LOAD this data into DynamoDB tables for initial testing
- * 4. DELETE this file once backend integration is complete
- *
- * ============================================================================
- * MOCK DATA LOCATIONS IN THE APPLICATION:
- * ============================================================================
- *
- * This mock data is currently used in:
- * - src/services/api.ts (all API functions return mock data)
- * - src/pages/Books.tsx (displays mockBooks)
- * - src/pages/BookDetail.tsx (finds book from mockBooks)
- * - src/pages/ReadingLists.tsx (displays mockReadingLists)
- * - src/pages/Admin.tsx (uses mockBooks for admin operations)
- *
- * ============================================================================
- * HOW TO REPLACE MOCK DATA WITH REAL API:
- * ============================================================================
- *
- * Step 1: Deploy DynamoDB tables using CDK (see infrastructure/lib/database-stack.ts)
- * Step 2: Load this data into DynamoDB using AWS CLI or Lambda function
- * Step 3: Deploy Lambda functions (see infrastructure/lambda/)
- * Step 4: Update src/services/api.ts to call Lambda via API Gateway
- * Step 5: Remove mock data returns from api.ts functions
- * Step 6: Test each endpoint individually
- * Step 7: Delete this file
- *
- * ============================================================================
- * DATA STRUCTURE NOTES:
- * ============================================================================
- *
- * - Book IDs: Simple numeric strings ('1', '2', etc.) - replace with UUIDs in production
- * - Dates: ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ)
- * - Ratings: Float between 0.0 and 5.0
- * - Cover Images: Relative paths to /public/book-covers/ directory
- * - ISBNs: ISBN-13 format (978-XXXXXXXXXX)
- *
- * ============================================================================
  */
 
 /**
  * MOCK BOOKS DATA
- *
- * This array contains 10 sample books across different genres.
- *
- * TO LOAD INTO DYNAMODB:
- * Use the AWS CLI or create a Lambda function to batch write these items:
- *
- * ```bash
- * aws dynamodb batch-write-item --request-items file://books-data.json
- * ```
- *
- * TO REPLACE IN CODE:
- * Update src/services/api.ts getBooks() function to call:
- * GET /books endpoint (Lambda function: get-books)
  */
 export const mockBooks: Book[] = [
   {
@@ -73,7 +16,7 @@ export const mockBooks: Book[] = [
     author: 'Matt Haig',
     genre: 'Fiction',
     description:
-      'Between life and death there is a library, and within that library, the shelves go on forever. Every book provides a chance to try another life you could have lived.',
+      'Between life and death there is a library, and within that library, the shelves go on forever.',
     coverImage: '/book-covers/midnight-library.jpg',
     rating: 4.5,
     publishedYear: 2020,
@@ -85,7 +28,7 @@ export const mockBooks: Book[] = [
     author: 'Andy Weir',
     genre: 'Science Fiction',
     description:
-      'A lone astronaut must save the earth from disaster in this incredible new science-based thriller from the author of The Martian.',
+      'A lone astronaut must save the earth from disaster in this incredible science-based thriller.',
     coverImage: '/book-covers/project-hail-mary.jpg',
     rating: 4.8,
     publishedYear: 2021,
@@ -97,7 +40,7 @@ export const mockBooks: Book[] = [
     author: 'Alex Michaelides',
     genre: 'Mystery',
     description:
-      "Alicia Berenson's life is seemingly perfect. A famous painter married to an in-demand fashion photographer, she lives in a grand house. One evening her husband returns home late, and Alicia shoots him five times in the face, and then never speaks another word.",
+      "Alicia Berenson's life is seemingly perfect until she commits a shocking crime.",
     coverImage: '/book-covers/silent-patient.jpg',
     rating: 4.3,
     publishedYear: 2019,
@@ -108,7 +51,7 @@ export const mockBooks: Book[] = [
     title: 'People We Meet on Vacation',
     author: 'Emily Henry',
     genre: 'Romance',
-    description: 'Two best friends. Ten summer trips. One last chance to fall in love.',
+    description: 'Two best friends. Ten summer trips. One last chance.',
     coverImage: '/book-covers/people-we-meet.jpg',
     rating: 4.2,
     publishedYear: 2021,
@@ -120,7 +63,7 @@ export const mockBooks: Book[] = [
     author: 'James Clear',
     genre: 'Non-Fiction',
     description:
-      'An Easy & Proven Way to Build Good Habits & Break Bad Ones. Tiny changes, remarkable results.',
+      'An easy & proven way to build good habits and break bad ones.',
     coverImage: '/book-covers/atomic-habits.jpg',
     rating: 4.7,
     publishedYear: 2018,
@@ -132,7 +75,7 @@ export const mockBooks: Book[] = [
     author: 'Taylor Jenkins Reid',
     genre: 'Fiction',
     description:
-      'Aging and reclusive Hollywood movie icon Evelyn Hugo is finally ready to tell the truth about her glamorous and scandalous life.',
+      'A reclusive Hollywood icon finally tells the truth about her life.',
     coverImage: '/book-covers/evelyn-hugo.jpg',
     rating: 4.6,
     publishedYear: 2017,
@@ -144,7 +87,7 @@ export const mockBooks: Book[] = [
     author: 'Frank Herbert',
     genre: 'Science Fiction',
     description:
-      'Set on the desert planet Arrakis, Dune is the story of the boy Paul Atreides, heir to a noble family tasked with ruling an inhospitable world.',
+      'Set on the desert planet Arrakis, a boy becomes the center of a prophecy.',
     coverImage: '/book-covers/dune.jpg',
     rating: 4.4,
     publishedYear: 1965,
@@ -156,7 +99,7 @@ export const mockBooks: Book[] = [
     author: 'Richard Osman',
     genre: 'Mystery',
     description:
-      'Four unlikely friends meet weekly to investigate unsolved killings. But when a local developer is found dead, these unorthodox detectives find themselves in the middle of their first live case.',
+      'Four unlikely friends investigate a real murder in their quiet village.',
     coverImage: '/book-covers/thursday-murder-club.jpg',
     rating: 4.1,
     publishedYear: 2020,
@@ -168,7 +111,7 @@ export const mockBooks: Book[] = [
     author: 'Tara Westover',
     genre: 'Non-Fiction',
     description:
-      'A memoir about a young girl who, kept out of school, leaves her survivalist family and goes on to earn a PhD from Cambridge University.',
+      'A memoir about a woman who escapes her survivalist upbringing.',
     coverImage: '/book-covers/educated.jpg',
     rating: 4.5,
     publishedYear: 2018,
@@ -180,7 +123,7 @@ export const mockBooks: Book[] = [
     author: 'Madeline Miller',
     genre: 'Fiction',
     description:
-      "A tale of gods, kings, immortal fame and the human heart, The Song of Achilles is a dazzling literary feat that brilliantly reimagines Homer's enduring masterwork, The Iliad.",
+      "A retelling of the Iliad through the love story of Achilles and Patroclus.",
     coverImage: '/book-covers/song-of-achilles.jpg',
     rating: 4.6,
     publishedYear: 2011,
@@ -190,22 +133,6 @@ export const mockBooks: Book[] = [
 
 /**
  * MOCK USERS DATA
- *
- * This array contains sample users for testing authentication and authorization.
- *
- * ⚠️ IN PRODUCTION: Users will be managed by Amazon Cognito, NOT DynamoDB
- *
- * DO NOT load this into DynamoDB. Instead:
- * 1. Set up Cognito User Pool (see infrastructure/lib/auth-stack.ts)
- * 2. Create test users via Cognito Console or AWS CLI
- * 3. User authentication will be handled by Cognito
- * 4. User profile data (name, role) can be stored in DynamoDB separately
- *
- * TO REPLACE IN CODE:
- * Update src/contexts/AuthContext.tsx to use AWS Amplify Auth:
- * - Auth.signIn() for login
- * - Auth.signUp() for registration
- * - Auth.currentAuthenticatedUser() for getting current user
  */
 export const mockUsers: User[] = [
   {
@@ -226,27 +153,6 @@ export const mockUsers: User[] = [
 
 /**
  * MOCK READING LISTS DATA
- *
- * This array contains sample reading lists for testing list management features.
- *
- * TO LOAD INTO DYNAMODB:
- * Use the AWS CLI or create a Lambda function to batch write these items:
- *
- * ```bash
- * aws dynamodb batch-write-item --request-items file://reading-lists-data.json
- * ```
- *
- * DYNAMODB TABLE STRUCTURE:
- * - Partition Key: userId (string)
- * - Sort Key: id (string)
- * - GSI: id-index (for querying by list ID)
- *
- * TO REPLACE IN CODE:
- * Update src/services/api.ts reading list functions to call:
- * - GET /reading-lists (Lambda: get-reading-lists)
- * - POST /reading-lists (Lambda: create-reading-list)
- * - PUT /reading-lists/:id (Lambda: update-reading-list)
- * - DELETE /reading-lists/:id (Lambda: delete-reading-list)
  */
 export const mockReadingLists: ReadingList[] = [
   {
