@@ -1,0 +1,68 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import { Header } from './components/layout/Header';
+import { Footer } from './components/layout/Footer';
+import { ProtectedRoute } from './components/common/ProtectedRoute';
+
+import { Home } from './pages/Home';
+import { Books } from './pages/Books';
+import { BookDetail } from './pages/BookDetail';
+import { Recommendations } from './pages/Recommendations';
+import { ReadingLists } from './pages/ReadingLists';
+import { Login } from './pages/Login';
+import { Signup } from './pages/Signup';
+import { Verify } from './pages/Verify';
+import { Admin } from './pages/Admin';
+import { NotFound } from './pages/NotFound';
+
+function App() {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <div className="flex flex-col min-h-screen">
+          <Header />
+
+          <main className="flex-1">
+            <Routes>
+              {/* Public routes */}
+              <Route path="/" element={<Home />} />
+              <Route path="/books" element={<Books />} />
+              <Route path="/books/:id" element={<BookDetail />} />
+              <Route path="/recommendations" element={<Recommendations />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/verify" element={<Verify />} />
+
+              {/* Protected user routes */}
+              <Route
+                path="/reading-lists"
+                element={
+                  <ProtectedRoute>
+                    <ReadingLists />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Admin-only route */}
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute requireAdmin>
+                    <Admin />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* 404 */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </main>
+
+          <Footer />
+        </div>
+      </BrowserRouter>
+    </AuthProvider>
+  );
+}
+
+export default App;
